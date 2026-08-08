@@ -47,9 +47,9 @@ async fn main() -> Result<()> {
     });
     let cache_handle = tokio::spawn(async move { cache_latest(&cache_state).await });
 
-    let listener = tokio::net::TcpListener::bind(("127.0.0.1", port)).await?;
+    let listener = tokio::net::TcpListener::bind(("0.0.0.0", port)).await?;
     println!(
-        "arb-server listening on http://127.0.0.1:{port} ({mode})"
+        "arb-server listening on http://0.0.0.0:{port} ({mode})"
     );
 
     tokio::select! {
