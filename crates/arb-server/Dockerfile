@@ -17,6 +17,7 @@ RUN mkdir -p crates/arb-core/src && \
     touch crates/arb-core/src/lib.rs && \
     touch crates/arb-engine/src/lib.rs && \
     touch crates/arb-server/src/lib.rs && \
+    touch crates/arb-server/src/main.rs && \
     cargo build --locked --release --bin arb-server --workspace && \
     touch -d "2026-01-01T00:00:00Z" target/release/arb-server && \
     strip target/release/arb-server
@@ -28,6 +29,7 @@ COPY crates/arb-server/src crates/arb-server/src
 RUN touch crates/arb-core/src/lib.rs && \
     touch crates/arb-engine/src/lib.rs && \
     touch crates/arb-server/src/lib.rs && \
+    touch crates/arb-server/src/main.rs && \
     cargo build --locked --release --bin arb-server --workspace && \
     strip target/release/arb-server
 
