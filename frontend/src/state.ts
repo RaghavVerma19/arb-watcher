@@ -76,7 +76,7 @@ function processEvent(ev: ScannerEvent): void {
 
   const seenNow = new Set<string>()
   for (const opp of ev.opportunities) {
-    const key = opp.path.join('→')
+    const key = opp.path.join('?')
     seenNow.add(key)
     state.oppSeen.set(key, (state.oppSeen.get(key) ?? 0) + 1)
   }
@@ -87,7 +87,7 @@ function processEvent(ev: ScannerEvent): void {
 
   state.analyses.clear()
   for (const opp of ev.opportunities) {
-    state.analyses.set(opp.path.join('→'), analyze(opp, ctx()))
+    state.analyses.set(opp.path.join('?'), analyze(opp, ctx()))
   }
   state.best =
     [...state.analyses.values()].sort(
@@ -106,7 +106,7 @@ function processEvent(ev: ScannerEvent): void {
   if (state.history.length > 120) state.history.shift()
 
   state.prevBpsByRoute = new Map(
-    ev.opportunities.map((o) => [o.path.join('→'), o.profit_bps]),
+    ev.opportunities.map((o) => [o.path.join('?'), o.profit_bps]),
   )
 }
 
@@ -154,6 +154,8 @@ async function loadOpps(): Promise<void> {
     tick: state.status?.tick ?? 0,
     prices: [],
     opportunities: opps,
+    is_simulated: false,
+    stale: false,
   }
   processEvent(ev)
 }
