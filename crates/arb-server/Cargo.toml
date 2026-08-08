@@ -1,0 +1,19 @@
+[package]
+name = "arb-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arb-core = { path = "../arb-core" }
+arb-engine = { path = "../arb-engine" }
+anyhow = { workspace = true }
+axum = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tower-http = { workspace = true }
+
+[dev-dependencies]
+http-body-util = "0.1"
+serde_json = { workspace = true }
+tower = "0.5"

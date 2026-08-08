@@ -1,0 +1,17 @@
+services:
+  scanner:
+    build:
+      context: .
+      dockerfile: crates/arb-server/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.mainnet.toml:/app/config.mainnet.toml:ro
+    environment:
+      - RUST_LOG=info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

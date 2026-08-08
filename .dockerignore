@@ -1,0 +1,10 @@
+target/
+node_modules/
+dist/
+.git/
+.env
+.env.*
+*.log
+README.md
+CONTEXT.md
+frontend/

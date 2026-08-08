@@ -1,0 +1,199 @@
+# Solana Triangular Arbitrage Scanner — market config.
+# Amounts are in base units (token decimals, like "lamports" for SOL):
+#   SOL  has 9 decimals  -> 1 SOL  = 1_000_000_000
+#   USDC has 6 decimals  -> 1 USDC = 1_000_000
+# fee_bps is the swap fee in basis points (1 bp = 0.01%). 30 = 0.3%.
+
+[[tokens]]
+symbol = "SOL"
+decimals = 9
+mint = "So11111111111111111111111111111111111111112"
+
+[[tokens]]
+symbol = "USDC"
+decimals = 6
+mint = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+
+[[tokens]]
+symbol = "USDT"
+decimals = 6
+mint = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+
+[[tokens]]
+symbol = "JUP"
+decimals = 6
+mint = "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+
+[[tokens]]
+symbol = "RAY"
+decimals = 6
+mint = "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+
+[[tokens]]
+symbol = "BONK"
+decimals = 5
+mint = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+
+[[tokens]]
+symbol = "WIF"
+decimals = 6
+mint = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+
+# Pools are constant-product AMMs: reserve_a * reserve_b = k.
+# Reserves are deliberately large (~$1M per side) relative to base_amount
+# (10,000 USDC) so price impact is small, like real pools.
+[[pools]]
+token_a = "SOL"
+token_b = "USDC"
+reserve_a = 10_000_000_000_000 # 10,000 SOL
+reserve_b = 1_000_000_000_000  # 1,000,000 USDC -> 1 SOL ~ 100 USDC
+fee_bps = 30
+dex = "raydium"
+address = "58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2" # Raydium AMM v4 WSOL/USDC (onchain mode only)
+
+[[pools]]
+token_a = "USDC"
+token_b = "USDT"
+reserve_a = 1_000_000_000_000  # 1,000,000 USDC
+reserve_b = 1_005_000_000_000  # 1,005,000 USDT -> 1 USDC buys ~1.005 USDT
+fee_bps = 30
+dex = "raydium"
+address = "7TbGqz32RsuwXbXY7EyBCiAnMbJq1gm1wKmfjQjuwoyF" # Raydium AMM v4 USDT/USDC
+
+[[pools]]
+token_a = "USDT"
+token_b = "SOL"
+reserve_a = 980_000_000_000    # 980,000 USDT
+reserve_b = 10_000_000_000_000 # 10,000 SOL    -> 1 SOL ~ 98 USDT
+fee_bps = 30
+dex = "raydium"
+address = "7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX" # Raydium AMM v4 WSOL/USDT
+
+# Deliberate mispricing: pool 1 sells SOL at 100 USDC, but pool 3 sells it at
+# 98 USDT (~97.5 USDC after pool 2's rate). So buy SOL with USDT (cheap),
+# sell it for USDC (dear), then swap USDC back to USDT. Profit path:
+#   USDC -> USDT -> SOL -> USDC
+
+[[pools]]
+token_a = "SOL"
+token_b = "JUP"
+reserve_a = 10_000_000_000_000 # 10,000 SOL
+reserve_b = 600_000_000_000    # 600,000 JUP  -> 1 SOL ~ 60 JUP
+fee_bps = 30
+dex = "raydium"
+address = "EYErUp5muPYEEkeaUCY22JibeZX7E9UuMcJFZkmNAN7c" # Raydium AMM v4 JUP/WSOL
+
+[[pools]]
+token_a = "JUP"
+token_b = "USDC"
+reserve_a = 600_000_000_000    # 600,000 JUP
+reserve_b = 1_000_000_000_000  # 1,000,000 USDC -> 1 JUP ~ 1.666 USDC
+fee_bps = 30
+dex = "raydium"
+address = "7RJ5qmsgmvUKK5QtCLT9qHpQMegkiULppHRBNuWso12E" # Raydium AMM v4 JUP/USDC
+
+# These three are consistent (SOL -> JUP -> USDC implies 1 SOL = 100 USDC,
+# matching pool 1), so they form NO arbitrage. Only the USDC/USDT/SOL cycle
+# is mispriced.
+
+[[pools]]
+token_a = "RAY"
+token_b = "SOL"
+reserve_a = 300_000_000_000    # 300,000 RAY
+reserve_b = 10_000_000_000_000 # 10,000 SOL   -> 1 RAY ~ 0.0333 SOL
+fee_bps = 30
+dex = "raydium"
+address = "AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA" # Raydium AMM v4 RAY/WSOL
+
+# Additional pools for better mainnet coverage
+[[pools]]
+token_a = "SOL"
+token_b = "BONK"
+reserve_a = 10_000_000_000_000  # 10,000 SOL
+reserve_b = 50_000_000_000_000  # 5,000,000 BONK -> 1 SOL ~ 500 BONK
+fee_bps = 25
+dex = "raydium"
+address = "DooV9ApmGAYv2kpsq6Jb5iH6FqgZcuzbF8aKUX7Z2pZf" # Raydium AMM v4 SOL/BONK
+
+[[pools]]
+token_a = "USDC"
+token_b = "BONK"
+reserve_a = 1_000_000_000_000   # 1,000,000 USDC
+reserve_b = 100_000_000_000_000 # 10,000,000 BONK -> 1 USDC ~ 10,000 BONK
+fee_bps = 25
+dex = "raydium"
+address = "HgJP7J1gALY2uvmXyf4d3hXyE3PBqZfVJMJxNcGpYYbK" # Raydium AMM v4 USDC/BONK
+
+[[pools]]
+token_a = "SOL"
+token_b = "WIF"
+reserve_a = 10_000_000_000_000  # 10,000 SOL
+reserve_b = 30_000_000_000_000  # 30,000,000 WIF -> 1 SOL ~ 3,000 WIF
+fee_bps = 30
+dex = "raydium"
+address = "GPMUHdQwPn4u3mC8N1dV7k8Y9fM1rT6F6XcC2V8h3Q9" # Raydium AMM v4 SOL/WIF
+
+[[pools]]
+token_a = "USDC"
+token_b = "WIF"
+reserve_a = 1_000_000_000_000   # 1,000,000 USDC
+reserve_b = 6_000_000_000_000    # 6,000,000 WIF -> 1 USDC ~ 6 WIF
+fee_bps = 30
+dex = "raydium"
+address = "K8m7z1m3gQ3hN7pD5qB9mN1gV4cH8Y5jZ3eG3v9C5r7" # Raydium AMM v4 USDC/WIF
+
+# Orca Whirlpools (concentrated liquidity). In onchain mode the reserves are
+# derived from liquidity + sqrt_price (virtual reserves); these numbers are the
+# simulator's initial values only, chosen to be consistent with the crafted
+# market above so no extra arbitrage appears at tick 0.
+[[pools]]
+token_a = "SOL"
+token_b = "USDC"
+reserve_a = 10_000_000_000_000 # 10,000 SOL
+reserve_b = 1_000_000_000_000  # 1,000,000 USDC -> 1 SOL ~ 100 USDC
+fee_bps = 4
+dex = "orca"
+address = "Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE" # Orca Whirlpool SOL/USDC (ts=4)
+
+[[pools]]
+token_a = "SOL"
+token_b = "USDT"
+reserve_a = 10_000_000_000_000 # 10,000 SOL
+reserve_b = 1_005_000_000_000  # 1,005,000 USDT -> 1 SOL ~ 100 USDC-equivalent
+fee_bps = 2
+dex = "orca"
+address = "FwewVm8u6tFPGewAyHmWAqad9hmF7mvqxK4mJ7iNqqGC" # Orca Whirlpool SOL/USDT (ts=2)
+
+# Scanner parameters.
+[scanner]
+base_token = "USDC"          # start each cycle with this token
+base_amount = 1_000_000_000  # 1,000 USDC (0.1% of pool depth -> small price impact)
+min_profit_bps = 5           # only report cycles >= 0.05% net profit (lowered for mainnet)
+max_cycle_len = 5            # N-leg cycles: 3 = triangles, 4 = quads, 5 = quints
+report_min_gross_bps = 3     # report near-misses where gross (zero-fee) edge >= 0.03%
+
+[simulator]
+volatility = 0.002            # max per-tick price move (0.2%) for each token
+pool_volatility = 0.008       # max per-tick move of each pool's own deviation (0.8%)
+mean_reversion = 0.9          # how fast pools pull back toward token prices (0..1)
+tick_interval_ms = 500        # time between market ticks
+seed = 42                     # fixed seed for reproducible simulator runs
+
+[jupiter]
+base_url = "https://api.jup.ag"
+refresh_ms = 2000             # delay between live quote scans
+
+[onchain]
+rpc_url = "https://api.mainnet-beta.solana.com"
+refresh_ms = 2000             # minimum interval between scans (RPC rate floor)
+slot_poll_ms = 250             # how often we poll getSlot for a new block
+slot_polling = true            # scan on a new slot (chain-driven) instead of a blind timer
+
+[paper]
+enabled = true                # paper trading on/off
+starting_capital = 10_000_000_000  # 10,000 USDC (6 decimals)
+min_exec_bps = 50             # only trade cycles >= 0.50% net profit
+live_exec = false             # KILL SWITCH: real trades are NEVER enabled
+
+[server]
+allowed_origin = "http://localhost:5173"

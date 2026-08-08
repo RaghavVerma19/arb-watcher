@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Arb Watch — watching pools for the quiet misfires</title>
+    <meta
+      name="description"
+      content="A calm, plain-English view of live Solana pool prices and the brief windows when three pools disagree. Paper trading only."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <canvas id="bg" aria-hidden="true"></canvas>
+
+    <header id="nav" class="nav">
+      <div class="nav-inner">
+        <button id="nav-brand" class="brand" type="button" aria-label="Arb Watch — back to overview">
+          <span class="brand-word">Arb Watch</span>
+        </button>
+
+        <nav class="nav-links" aria-label="Primary">
+          <button type="button" class="nav-link is-active" data-view="landing">Overview</button>
+          <button type="button" class="nav-link" data-view="history">History</button>
+          <button type="button" class="nav-link" data-view="terminal">Terminal</button>
+          <button type="button" class="nav-link" data-modal="systems">Systems</button>
+        </nav>
+
+        <div class="nav-status">
+          <span id="mode" class="mode-tag">—</span>
+          <span id="nav-rpc" class="nav-rpc num">—</span>
+          <span id="conn" class="conn-pill">
+            <span id="dot" class="status-dot warn"></span>
+            <span id="conn-label">Connecting…</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main id="view-landing" class="view view-landing" aria-label="Overview"></main>
+    <main id="view-history" class="view view-history" aria-label="History" hidden></main>
+    <main id="view-terminal" class="view view-terminal" aria-label="Terminal" hidden></main>
+
+    <div id="veil" aria-hidden="true"></div>
+
+    <div id="modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <header class="modal-head">
+          <h2 id="modal-title">Systems</h2>
+          <button id="modal-close" type="button" aria-label="Close">✕</button>
+        </header>
+        <div class="modal-body" id="modal-body"></div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
