@@ -14,23 +14,17 @@ COPY crates/arb-server/Cargo.toml crates/arb-server/
 RUN mkdir -p crates/arb-core/src && \
     mkdir -p crates/arb-engine/src && \
     mkdir -p crates/arb-server/src && \
-    touch crates/arb-core/src/lib.rs && \
-    touch crates/arb-engine/src/lib.rs && \
-    touch crates/arb-server/src/lib.rs && \
-    touch crates/arb-server/src/main.rs && \
-    cargo build --locked --release --bin arb-server --workspace && \
-    touch -d "2026-01-01T00:00:00Z" target/release/arb-server && \
-    strip target/release/arb-server
+    echo "// stub" > crates/arb-core/src/lib.rs && \
+    echo "// stub" > crates/arb-engine/src/lib.rs && \
+    echo "// stub" > crates/arb-server/src/lib.rs && \
+    echo "fn main() {}" > crates/arb-server/src/main.rs && \
+    cargo fetch
 
 COPY crates/arb-core/src crates/arb-core/src
 COPY crates/arb-engine/src crates/arb-engine/src
 COPY crates/arb-server/src crates/arb-server/src
 
-RUN touch crates/arb-core/src/lib.rs && \
-    touch crates/arb-engine/src/lib.rs && \
-    touch crates/arb-server/src/lib.rs && \
-    touch crates/arb-server/src/main.rs && \
-    cargo build --locked --release --bin arb-server --workspace && \
+RUN cargo build --locked --release --bin arb-server --workspace && \
     strip target/release/arb-server
 
 FROM debian:bookworm-slim AS runtime
