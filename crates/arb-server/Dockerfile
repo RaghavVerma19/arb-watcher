@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM rust:1.75-slim AS builder
+FROM rust:slim AS builder
 WORKDIR /app
 
 RUN apt-get update && \
