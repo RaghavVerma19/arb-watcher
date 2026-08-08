@@ -132,4 +132,4 @@ min_exec_bps = 50
 live_exec = false
 
 [server]
-allowed_origin = "http://localhost:5173"
+allowed_origin = "*"

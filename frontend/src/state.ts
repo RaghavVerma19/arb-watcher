@@ -198,7 +198,8 @@ async function pollRpcLatency(): Promise<void> {
 
 function connectWs(): void {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-  const ws = new WebSocket(`${proto}://${location.host}/ws`)
+  const wsHost = (import.meta.env.VITE_WS_HOST ?? '').trim() || location.host
+  const ws = new WebSocket(`${proto}://${wsHost}/ws`)
   ws.onopen = () => setConn(true)
   ws.onmessage = (ev: MessageEvent<string>) => {
     const event: ScannerEvent = JSON.parse(ev.data)

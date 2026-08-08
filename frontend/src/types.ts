@@ -54,6 +54,9 @@ export interface ScannerEvent {
   prices: [string, number][]
   opportunities: Opportunity[]
   slot?: number
+  is_simulated: boolean
+  quoted_at?: number
+  stale: boolean
 }
 
 export interface HistoricalOpportunity {
